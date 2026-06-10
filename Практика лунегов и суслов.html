@@ -1,0 +1,868 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+  <title>Пермский край • Профессии будущего | Своя игра</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: radial-gradient(circle at 30% 10%, #1b2b3f, #0a121f);
+      font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      margin: 0;
+      color: #f2e5c7;
+    }
+
+    .game-container {
+      max-width: 850px;
+      width: 100%;
+      background: rgba(8, 20, 33, 0.92);
+      backdrop-filter: blur(14px);
+      border: 2px solid #c9a234;
+      border-radius: 56px;
+      padding: 20px 20px 30px;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.8), 0 0 35px #b38b2e70;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #fad742;
+      text-shadow: 0 0 20px #d49b1f, 0 4px 10px black;
+      line-height: 1.2;
+    }
+
+    .score-board {
+      background: #0f1a2b;
+      border: 2px solid #e2ad3a;
+      border-radius: 40px;
+      padding: 12px 28px;
+      font-weight: bold;
+      font-size: 1.8rem;
+      color: #ffdf8c;
+      background: linear-gradient(180deg, #1f3147 0%, #0b1322 100%);
+      box-shadow: 0 0 20px #f0b32366;
+      text-align: center;
+      min-width: 140px;
+    }
+
+    .score-label {
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      color: #bba87f;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #bba87f;
+      margin-bottom: 15px;
+      border-bottom: 1px dashed #b4943a;
+      padding-bottom: 8px;
+      width: 100%;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    .group-selector {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+
+    .group-btn {
+      background: #1e2b3c;
+      border: 2px solid #5f6b4b;
+      color: #e4d5b3;
+      padding: 12px 18px;
+      border-radius: 40px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: linear-gradient(180deg, #253544 0%, #0f1925 100%);
+      box-shadow: 0 4px 0 #0a0f16;
+      letter-spacing: 0.8px;
+      flex: 1 1 auto;
+      text-align: center;
+    }
+
+    .group-btn.active {
+      background: #c9a234;
+      border-color: #fada5e;
+      color: #0b0c14;
+      font-weight: 800;
+      box-shadow: 0 0 20px #f0b323;
+    }
+
+    .points-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin: 15px 0 18px;
+      width: 100%;
+    }
+
+    .point-btn {
+      background: #0f1a2b;
+      border: 2px solid #a68b40;
+      color: #ffdf8c;
+      font-weight: bold;
+      font-size: 1.3rem;
+      padding: 12px 16px;
+      border-radius: 28px;
+      cursor: pointer;
+      min-width: 70px;
+      background: linear-gradient(180deg, #1f3147 0%, #0b1322 100%);
+      transition: 0.15s;
+      box-shadow: 0 4px 0 #03070e;
+    }
+
+    .point-btn.used {
+      opacity: 0.4;
+      text-decoration: line-through;
+      pointer-events: none;
+      background: #2f2f2f;
+      border-color: #5a5a5a;
+    }
+
+    .question-panel {
+      background: #091320;
+      border: 2px solid #e2ad3a;
+      border-radius: 38px;
+      padding: 20px 24px;
+      margin: 8px 0 18px;
+      width: 100%;
+      background: linear-gradient(145deg, #0f1d2e, #040a14);
+      box-shadow: inset 0 2px 8px black, 0 12px 18px -8px black;
+    }
+
+    .category {
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #cfaa4a;
+      margin-bottom: 6px;
+    }
+
+    .question-text {
+      font-size: 1.7rem;
+      font-weight: bold;
+      line-height: 1.3;
+      word-break: break-word;
+      color: #faf0d7;
+    }
+
+    .answers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      width: 100%;
+      margin: 8px 0 16px;
+    }
+
+    .answer-btn {
+      background: #1e2640;
+      border: 2px solid #796f4b;
+      color: #f3e3be;
+      padding: 16px 6px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 26px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+      word-break: break-word;
+      background: linear-gradient(180deg, #28334f 0%, #11172c 100%);
+      box-shadow: 0 5px 0 #0a0c18;
+    }
+
+    .answer-btn:hover:not(:disabled) {
+      background: #3d4570;
+      border-color: #e7b82e;
+      transform: translateY(-2px);
+    }
+
+    .answer-btn.correct-highlight {
+      background: #1f4f2b;
+      border-color: #b0e57c;
+      box-shadow: 0 0 18px #6ab04c;
+    }
+
+    .answer-btn.wrong-highlight {
+      background: #5c2a2a;
+      border-color: #f28b82;
+    }
+
+    .explanation-box {
+      background: #faf3e0;
+      color: #1f1a0c;
+      border-radius: 24px;
+      padding: 20px 22px;
+      margin: 12px 0 18px;
+      font-weight: 500;
+      border-left: 8px solid #e2ac2c;
+      box-shadow: 0 6px 14px black;
+      font-size: 1rem;
+      width: 100%;
+      line-height: 1.6;
+      max-height: 350px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .next-btn, .match-finish-btn {
+      background: radial-gradient(circle at 30% 20%, #f5d24a, #b68b1a);
+      border: none;
+      font-weight: bold;
+      font-size: 1.4rem;
+      padding: 14px 30px;
+      border-radius: 40px;
+      color: #0a0f1c;
+      letter-spacing: 2px;
+      cursor: pointer;
+      box-shadow: 0 7px 0 #6d4f10, 0 10px 20px black;
+      transition: 0.1s;
+      margin-top: 5px;
+      width: fit-content;
+      min-width: 200px;
+      text-transform: uppercase;
+    }
+
+    .next-btn:active, .match-finish-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 3px 0 #4a3408;
+    }
+
+    .next-btn:disabled, .match-finish-btn:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    .match-section {
+      width: 100%;
+      margin-top: 20px;
+      border-top: 2px solid #b4943a;
+      padding-top: 20px;
+    }
+
+    .match-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #fedb5f;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .match-area {
+      background: #0b1320;
+      border-radius: 32px;
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .match-pair {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .left-item {
+      background: #23304b;
+      border-radius: 22px;
+      padding: 12px 16px;
+      font-weight: bold;
+      color: #fadf8a;
+      min-width: 140px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .match-select {
+      background: #1a223a;
+      border: 2px solid #b4943a;
+      border-radius: 26px;
+      padding: 12px 16px;
+      font-weight: bold;
+      color: #f3e3b0;
+      background: #121b30;
+      cursor: pointer;
+      flex: 2;
+      text-align: center;
+    }
+
+    .match-feedback {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-align: center;
+    }
+
+    .restart-link {
+      margin-top: 20px;
+      color: #cfb053;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .bonus-toast {
+      color: #f5d742;
+      font-weight: bold;
+      margin-left: 10px;
+      animation: fadeIn 0.4s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @media (max-width: 550px) {
+      .answers-grid {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="game-container" id="gameApp">
+  <div class="header-row">
+    <h1>ПРОФЕССИИ ПЕРМИ</h1>
+    <div class="score-board">
+      <div class="score-label">ВАШ СЧЁТ</div>
+      <span id="scoreDisplay">0</span>
+    </div>
+  </div>
+  <div class="subtitle">Добыча • Машины • Цифра</div>
+
+  <div class="group-selector" id="groupSelector">
+    <button class="group-btn active" data-group="0">⛏ Добыча и энергия</button>
+    <button class="group-btn" data-group="1">⚙️ Машины и механизмы</button>
+    <button class="group-btn" data-group="2">📡 Цифра и автоматика</button>
+  </div>
+
+  <div class="points-grid" id="pointsGrid"></div>
+
+  <div id="quizRound" style="width:100%; display: flex; flex-direction: column; align-items: center;">
+    <div class="question-panel">
+      <div class="category" id="categoryDisplay">ДОБЫЧА И ЭНЕРГИЯ</div>
+      <div class="question-text" id="questionDisplay">Выберите вопрос</div>
+    </div>
+    <div class="answers-grid" id="answersContainer"></div>
+    <div class="explanation-box" id="explanationDisplay">💡 Здесь появится подробное пояснение после ответа.</div>
+    <button class="next-btn" id="nextQuestionBtn" disabled>ПРОДОЛЖИТЬ ▶</button>
+  </div>
+
+  <div id="matchRound" style="display: none; width: 100%; flex-direction: column; align-items: center;">
+    <div class="match-section">
+      <div class="match-title">🎓 СОПОСТАВЛЕНИЕ: ПРОФЕССИЯ – ВУЗ</div>
+      <div class="match-area" id="matchContainer"></div>
+      <div class="match-feedback" id="matchFeedback"></div>
+      <button class="match-finish-btn" id="checkMatchBtn">ПРОВЕРИТЬ</button>
+      <div class="restart-link" id="restartGameBtn">🔄 Начать заново</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ---------- БАЗА ВОПРОСОВ С РАЗВЁРНУТЫМИ ПОЯСНЕНИЯМИ ----------
+    const groups = [
+      { // Группа 0: Добыча и энергия
+        name: "Добыча и энергия",
+        questions: [
+          { 
+            cost: 100, 
+            question: "Представитель этой профессии ищет месторождения нефти и газа. В Перми этому учат в ПНИПУ. Назовите специальность.", 
+            options: ["Геофизик", "Геолог-нефтяник", "Маркшейдер"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: Геолог-нефтяник
+
+📚 Где учиться: ПНИПУ (Пермский Политех), кафедра «Геология нефти и газа».
+⏳ Срок обучения: 4 года (бакалавриат) или 5 лет (специалитет).
+💰 Стоимость: 150–170 тыс. руб./год (платно). Много бюджетных мест (проходной балл ~200+).
+🏢 Где работать: ООО «ЛУКОЙЛ-Пермь», «Пермнефтегеофизика», «Геологоразведка» (Пермь, Кунгур, Чернушка, Усинск).
+💵 Зарплата: Начинающий геолог в поле (вахта) — от 80 000 руб. Опытный в офисе — 120 000+.
+📈 Карьера: Рост до Главного геолога за 7–10 лет.
+❤️ Характер: Усидчивость, любовь к анализу данных, крепкое здоровье для полевых работ.
+🎁 Соцпакет: ДМС, оплата санаториев-профилакториев («Жемчужина», «Усть-Качка»), льготные путёвки детям.`
+          },
+          { 
+            cost: 200, 
+            question: "Как называют специалиста, который управляет процессом бурения скважин, контролируя сложное оборудование, чтобы добыть нефть с глубины 2 км?", 
+            options: ["Оператор по добыче нефти и газа", "Бурильщик", "Инженер-буровик (супервайзер)"], 
+            correct: 2, 
+            explanation: `✅ Правильный ответ: Инженер-буровик (супервайзер)
+
+📚 Где учиться: ПНИПУ (Горно-нефтяной факультет), специальность «Нефтегазовые техника и технологии».
+⏳ Формы обучения: Очная (4 года) и заочная (для уже работающих помощниками бурильщика).
+🏢 Работа: Буровые компании (Eurasia Drilling, Интегра), ЛУКОЙЛ. Часто вахта (Север Пермского края, Республика Коми).
+💵 Зарплата: Инженер на промысле — 100–150 тыс. руб. за вахту.
+🏕️ Условия: Современные бытовые вагончики, спортзалы, интернет.
+🎁 Соцпакет: Страхование жизни и здоровья (работа опасная), оплата проезда к месту отдыха.
+🧠 Важные черты: Стрессоустойчивость, умение быстро принимать решения.`
+          },
+          { 
+            cost: 300, 
+            question: "Этот специалист отвечает за бесперебойную работу турбин, генераторов и котлов на ГРЭС и ТЭЦ. Где в Перми готовят энергетиков?", 
+            options: ["ПГАТУ (Сельхозакадемия)", "ПНИПУ (Электротехнический факультет)", "ПГНИУ (Классический университет)"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: ПНИПУ (Электротехнический факультет)
+
+📚 Специальность: «Электроэнергетика и теплоэнергетика».
+📊 Бюджет: Доступно, проходной балл от 180.
+🏢 Работа в регионе: Пермская ГРЭС (Добрянка), ТЭЦ-6, ТЭЦ-9 (Пермь), «Пермэнерго».
+💵 Зарплата: Инженер смены — 60–80 тыс. руб. Начальник смены — 90+.
+📈 Карьера: Стабильность как в «Газпроме». Рост до начальника цеха за 5–8 лет.
+🎁 Соцпакет: Доплаты за выслугу лет, ДМС, негосударственная пенсия.
+⚡ Важно: Техническая грамотность и дисциплина («энергетика ошибок не прощает»).`
+          },
+          { 
+            cost: 400, 
+            question: "Кот в мешке! Профессия, связанная с добычей «белого золота» в городе Березники. Речь о калии. Кто составляет план горных выработок и следит, чтобы под землей ничего не обрушилось?", 
+            options: ["Шахтер", "Маркшейдер", "Горный инженер-планировщик"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: Маркшейдер
+
+📚 Учёба: ПНИПУ, специальность «Горное дело» (профиль «Маркшейдерское дело»). 5 лет специалитета. Дефицитная профессия!
+🏢 Главный работодатель: ПАО «Уралкалий» (Березники, Соликамск).
+💵 Зарплата: От 90 000 руб. для молодого специалиста.
+🎁 Соцпакет «Уралкалия»: Один из лучших в крае! Полис ДМС с лимитом 2 млн руб., санаторий-профилакторий, компенсация ипотеки, бесплатный фитнес, летний отдых детей на море (лагерь «Чайка» в Туапсе).
+🧠 Характер: Пространственное мышление, точность, ответственность за жизнь людей. Повышение квалификации каждые 3 года обязательно.`
+          },
+          { 
+            cost: 500, 
+            question: "Этот «IT-шник в нефтянке» строит цифровые 3D-модели месторождений, чтобы выжать максимум нефти из пласта.", 
+            options: ["Системный администратор", "Геонавигатор", "Инженер-гидродинамического моделирования"], 
+            correct: 2, 
+            explanation: `✅ Правильный ответ: Инженер-гидродинамического моделирования
+
+📚 Учёба: ПНИПУ, магистратура «Нефтегазовое дело» / «Разработка месторождений». Требуется сильная база в математике и программировании.
+🏢 Работа: Инженерные центры ЛУКОЙЛа и «Пермнефти» (офисная работа в центре Перми, без вахт).
+💵 Зарплата: 120–180 тыс. руб. (зависит от сложности проектов).
+🎁 Соцпакет: Премии за ввод скважин, годовые бонусы (оклад * 2-3), корпоративный транспорт до работы.
+🌐 Важно знать: Английский язык (софт часто зарубежный).`
+          }
+        ]
+      },
+      { // Группа 1: Машины и механизмы
+        name: "Машины и механизмы",
+        questions: [
+          { 
+            cost: 100, 
+            question: "Знаменитые пермские авиадвигатели ПД-14 и ПС-90А создают тысячи людей. Какой вуз Перми является кузницей кадров для «ОДК-Пермские моторы»?", 
+            options: ["ПГГПУ (Педагогический)", "ВШЭ-Пермь", "ПНИПУ (Аэрокосмический факультет)"], 
+            correct: 2, 
+            explanation: `✅ Правильный ответ: ПНИПУ (Аэрокосмический факультет)
+
+📚 Специальности: «Проектирование авиационных и ракетных двигателей».
+⏳ Срок: 5,5 лет (специалитет).
+📊 Бюджет: Много целевых мест от завода. Стипендия от предприятия до 15 000 руб. дополнительно к академической.
+🏢 Работа: «ОДК-Пермские моторы», «ОДК-Авиадвигатель», «Редуктор-ПМ».
+💵 Зарплата: Старт от 50 000, ведущий инженер — 90 000+.`
+          },
+          { 
+            cost: 200, 
+            question: "Специалист, который работает на станках с числовым программным управлением (ЧПУ) и фактически является «ювелиром по металлу».", 
+            options: ["Токарь", "Оператор станков с ЧПУ", "Фрезеровщик"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: Оператор станков с ЧПУ
+
+📚 Где учиться: Можно в вузе (ПНИПУ, МТФ) или колледже.
+📈 Востребованность: Огромная! «Мотовилихинские заводы», «Новомёт», Пермская приборостроительная компания.
+💵 Зарплата: Сдельщина. Новичок — 50 тыс., умелый — 100–150 тыс. руб.
+🎁 Соцпакет: Горячая сетка (вредность), бесплатное питание в ночные смены, корпоративный спорт (хоккей, волейбол).
+🧠 Черты: Аккуратность, усидчивость, хорошая память на цифры (G-коды).`
+          },
+          { 
+            cost: 300, 
+            question: "Этот инженер не просто конструирует деталь, а заставляет роботов сваривать кузов автомобиля или собирать мотор. О ком речь?", 
+            options: ["Слесарь-сборщик", "Инженер-робототехник", "Программист 1С"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: Инженер-робототехник
+
+📚 Учёба: ПНИПУ (кафедра «Автоматизация и роботизация производственных процессов»), ПГНИУ (физический факультет).
+🏢 Где применять в Перми: Промобот (производство человекоподобных роботов), заводы, внедряющие робосварку.
+💰 Стоимость обучения: 160-180 тыс./год.
+💵 Зарплата: 80–120 тыс. руб. Специальность будущего. Карьерный рост до ведущего инженера за 3-4 года.
+📚 Требования: Знание физики, механики, языков программирования. Работа интересная, не рутинная.`
+          },
+          { 
+            cost: 400, 
+            question: "Аукцион! Специалист этого профиля проектирует детали, которые потом печатают из металлического порошка на 3D-принтере. Как называется это передовое направление в Политехе?", 
+            options: ["Литье металлов", "Аддитивные технологии", "Порошковая металлургия"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: Аддитивные технологии
+
+📚 Учёба: ПНИПУ, магистерская программа «Аддитивные технологии» (база — материаловедение или сварка).
+🏢 Работа: Центр аддитивных технологий «ОДК», НПО «Искра».
+✨ Уникальность: Детали сложной формы из титана, которые нельзя получить литьем, выращиваются за часы. Это снижает вес двигателя и экономит топливо.
+🔬 Условия: Высокотехнологичная лаборатория, белые халаты, работа с микроскопом и компьютером.
+💵 Зарплата конструктора: от 70 000 + премии за изобретения. Важна склонность к изобретательству.`
+          },
+          { 
+            cost: 500, 
+            question: "Куда пойти учиться в Перми, чтобы стать Главным металлургом на заводе и управлять плавкой стали?", 
+            options: ["ПГНИУ (Химический факультет)", "ПНИПУ (Механико-технологический факультет)", "Пермский институт культуры"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: ПНИПУ (Механико-технологический факультет)
+
+📚 Профиль: «Металловедение и термическая обработка металлов».
+🏢 Предприятия: «Мотовилиха — гражданское машиностроение», Чусовской металлургический завод (входит в ОМК), «Камкабель».
+📈 Карьера: Мастер смены -> Начальник цеха -> Главный металлург (доход 150–200 тыс.).
+🎁 Забота: Сильные профсоюзы, доплаты за стаж «горячего цеха», молоко «за вредность», ранний выход на пенсию (в 45–50 лет).
+💪 Характер: Закаляется жарой цехов — это люди-кремни.`
+          }
+        ]
+      },
+      { // Группа 2: Цифра и автоматика
+        name: "Цифра и автоматика",
+        questions: [
+          { 
+            cost: 100, 
+            question: "Специалист, который автоматизирует работу станков и насосов на заводе с помощью контроллеров (умных блоков).", 
+            options: ["Сетевой инженер", "Инженер АСУ ТП", "Электрик"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: Инженер АСУ ТП (Автоматизированных систем управления технологическими процессами)
+
+📚 Где учиться: ПНИПУ (электротехнический и горно-нефтяной), ПГАТУ (автоматизация сельхозмашин).
+🏢 Применение: Везде, где есть техника — от «ЛУКОЙЛа» до Пермского свинокомплекса.
+💵 Зарплата: Универсальный солдат. Минимум 70 тыс., в нефтянке на вахте — 150+.
+🧠 Качества: Логическое мышление, знание физики и программирования. Работа связана с командировками и пусконаладкой.`
+          },
+          { 
+            cost: 200, 
+            question: "Какой вуз Перми готовит специалистов по защите информации, которых потом нарасхват берут в банки и спецслужбы?", 
+            options: ["ПГНИУ (Мехмат)", "ВШЭ-Пермь (Бизнес-информатика)", "ПНИПУ (Факультет прикладной математики и механики)"], 
+            correct: 2, 
+            explanation: `✅ Правильный ответ: ПНИПУ (кафедра «Автоматика и телемеханика», профиль «Кибербезопасность»)
+
+📚 Альтернатива: ПГНИУ (радиофизика и защита информации).
+📊 Бюджет: Очень высокий конкурс (проходной балл 240+).
+🏢 Работа: Администрация губернатора, Центробанк, Билайн, Ростелеком, «ОДК-ПМ».
+💵 Зарплата: 80–150 тыс. руб. Уважение в коллективе, спокойная офисная работа.
+📈 Тренд: Угрозы взломов растут, поэтому каждый год добавляют зарплату и соцпакет (ДМС, фитнес).`
+          },
+          { 
+            cost: 300, 
+            question: "Чем в IT-компании занимается «бизнес-аналитик», которого готовят в Пермской Вышке?", 
+            options: ["Чинит вирусы", "Переводит желания заказчика на язык программистов (пишет ТЗ)", "Настраивает роутеры"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: Переводит желания заказчика на язык программистов (пишет ТЗ)
+
+📚 Вуз: НИУ ВШЭ — Пермь, программа «Бизнес-информатика».
+💰 Стоимость: Дорого (около 200 тыс./год), много скидок за баллы ЕГЭ.
+🏢 Где работать: Айти-компании Перми (XT Group, PROgmatica, Napoleon IT), банки, ЛУКОЙЛ (цифровые офисы).
+☕ Условия: «Белые воротнички». Гибкий график, удаленка, ДМС топ-уровня, печеньки и кофе в офисе, современные коворкинги (например, в «Морион Digital»).
+💵 Зарплата: от 80 до 180 тыс.`
+          },
+          { 
+            cost: 400, 
+            question: "Этот физик-инженер настраивает лазеры и оптические линии, которые передают интернет. Специалистов этого профиля выпускает классический ПГНИУ.", 
+            options: ["Оптик-механик", "Фотонщик", "Инженер связи (волоконно-оптические линии)"], 
+            correct: 2, 
+            explanation: `✅ Правильный ответ: Инженер связи (телекоммуникации / фотоника)
+
+📚 Учёба: ПГНИУ (Физический факультет, кафедра фотоники) или ПНИПУ (Радиотехника).
+🏢 Работа: ПАО «Пермская приборостроительная компания» (производство волокна), Ростелеком, МТС, «ЭР-Телеком» (Дом.ру).
+🌐 Суть: Мир переходит на оптику. Эти специалисты «сшивают» города интернетом.
+💵 Зарплата: 70–90 тыс. в городе.
+🎁 Соцпакет: Оплата мобильной связи, корпоративные тарифы, обучение за счет компании новым технологиям (например, 5G). Необходима скрупулезность.`
+          },
+          { 
+            cost: 500, 
+            question: "Data Scientist в Перми — это не просто айтишник. Это человек, который для «Уралкалия» может предсказать аварию насоса за неделю до ее наступления с помощью машинного обучения. Какое базовое образование для этого лучше?", 
+            options: ["Педагогическое", "Прикладная математика и информатика (ПНИПУ или ПГНИУ)", "Техносферная безопасность"], 
+            correct: 1, 
+            explanation: `✅ Правильный ответ: Прикладная математика и информатика (ПНИПУ или ПГНИУ)
+
+🌟 Суть: Элита IT. Это ученые среди программистов.
+📚 Вузы: Мехмат ПГНИУ или ФПММ ПНИПУ. Часто идут в магистратуру по Big Data.
+💵 Зарплата: Самая высокая среди молодежи в регионе — от 130 000 до 250 000 руб. уже к 25 годам.
+🚀 Условия: Полная свобода творчества, работа с нейросетями. Компании предлагают релокационные пакеты (помощь с жильем), бесплатный английский, годовые бонусы.
+🧠 Требования: Нужно быть гением в математике, обладать усидчивостью и постоянно учиться.`
+          }
+        ]
+      }
+    ];
+
+    // Данные для сопоставления
+    const matchPairs = [
+      { left: "Геолог-нефтяник", right: "ПНИПУ (кафедра Геологии)" },
+      { left: "Инженер-буровик", right: "ПНИПУ (Горно-нефтяной)" },
+      { left: "Маркшейдер", right: "ПНИПУ (Горное дело)" },
+      { left: "Авиадвигателист", right: "ПНИПУ (Аэрокосмический)" },
+      { left: "Инженер АСУ ТП", right: "ПНИПУ / ПГАТУ" },
+      { left: "Data Scientist", right: "ПНИПУ / ПГНИУ (мехмат)" }
+    ];
+
+    // ---------- СОСТОЯНИЕ ----------
+    let currentGroup = 0;
+    let usedQuestions = [new Set(), new Set(), new Set()];
+    let activeQuestion = null;
+    let answered = false;
+    let gamePhase = 'quiz';
+    let shuffledMatchRights = [];
+    let totalScore = 0; // НАБРАННЫЕ БАЛЛЫ
+
+    // DOM элементы
+    const groupButtons = document.querySelectorAll('.group-btn');
+    const pointsGrid = document.getElementById('pointsGrid');
+    const categoryDisplay = document.getElementById('categoryDisplay');
+    const questionDisplay = document.getElementById('questionDisplay');
+    const answersContainer = document.getElementById('answersContainer');
+    const explanationDisplay = document.getElementById('explanationDisplay');
+    const nextBtn = document.getElementById('nextQuestionBtn');
+    const quizRoundDiv = document.getElementById('quizRound');
+    const matchRoundDiv = document.getElementById('matchRound');
+    const matchContainer = document.getElementById('matchContainer');
+    const matchFeedback = document.getElementById('matchFeedback');
+    const checkMatchBtn = document.getElementById('checkMatchBtn');
+    const restartBtn = document.getElementById('restartGameBtn');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+
+    // Обновление счёта на экране
+    function updateScoreDisplay() {
+      scoreDisplay.textContent = totalScore;
+    }
+
+    function renderPoints() {
+      pointsGrid.innerHTML = '';
+      const group = groups[currentGroup];
+      group.questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'point-btn';
+        btn.textContent = q.cost;
+        if (usedQuestions[currentGroup].has(idx)) {
+          btn.classList.add('used');
+        }
+        btn.addEventListener('click', () => selectQuestion(idx));
+        pointsGrid.appendChild(btn);
+      });
+    }
+
+    function selectQuestion(index) {
+      if (usedQuestions[currentGroup].has(index)) return;
+      answered = false;
+      const q = groups[currentGroup].questions[index];
+      activeQuestion = { group: currentGroup, index: index, data: q };
+      
+      categoryDisplay.textContent = groups[currentGroup].name.toUpperCase();
+      questionDisplay.textContent = q.question;
+      explanationDisplay.innerHTML = '💡 Пояснение появится после выбора варианта.';
+      
+      answersContainer.innerHTML = '';
+      q.options.forEach((opt, optIdx) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = opt;
+        btn.dataset.optionIndex = optIdx;
+        btn.addEventListener('click', () => handleAnswer(optIdx, btn));
+        answersContainer.appendChild(btn);
+      });
+      
+      document.querySelectorAll('.answer-btn').forEach(b => {
+        b.classList.remove('correct-highlight', 'wrong-highlight');
+        b.disabled = false;
+      });
+      
+      nextBtn.disabled = true;
+    }
+
+    function handleAnswer(selectedIdx, clickedBtn) {
+      if (answered || !activeQuestion) return;
+      const q = activeQuestion.data;
+      const isCorrect = (selectedIdx === q.correct);
+      answered = true;
+      
+      // Начисление баллов при правильном ответе
+      if (isCorrect) {
+        totalScore += q.cost;
+        updateScoreDisplay();
+      }
+      
+      const allBtns = document.querySelectorAll('.answer-btn');
+      allBtns.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === q.correct) btn.classList.add('correct-highlight');
+        else if (idx === selectedIdx && !isCorrect) btn.classList.add('wrong-highlight');
+      });
+      
+      // Добавляем в пояснение информацию о начислении
+      const bonusText = isCorrect ? `\n\n🟢 +${q.cost} баллов! Текущий счёт: ${totalScore}` : `\n\n🔴 Ответ неверный. Баллы не начислены. Счёт: ${totalScore}`;
+      explanationDisplay.innerHTML = q.explanation + bonusText;
+      
+      usedQuestions[currentGroup].add(activeQuestion.index);
+      renderPoints();
+      nextBtn.disabled = false;
+    }
+
+    function goToNext() {
+      if (!answered || !activeQuestion) return;
+      if (usedQuestions[currentGroup].size === groups[currentGroup].questions.length) {
+        const allUsed = groups.every((g, i) => usedQuestions[i].size === g.questions.length);
+        if (allUsed) {
+          startMatchGame();
+        } else {
+          activeQuestion = null;
+          questionDisplay.textContent = 'Выберите следующий вопрос';
+          answersContainer.innerHTML = '';
+          explanationDisplay.innerHTML = `💡 Вы завершили эту группу. Переключитесь на другую. Текущий счёт: ${totalScore}`;
+          nextBtn.disabled = true;
+        }
+      } else {
+        activeQuestion = null;
+        questionDisplay.textContent = 'Выберите следующий вопрос';
+        answersContainer.innerHTML = '';
+        explanationDisplay.innerHTML = `💡 Выберите вопрос из списка баллов. Счёт: ${totalScore}`;
+        nextBtn.disabled = true;
+      }
+    }
+
+    function switchGroup(groupIndex) {
+      if (groupIndex === currentGroup) return;
+      currentGroup = groupIndex;
+      activeQuestion = null;
+      answered = false;
+      
+      groupButtons.forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === groupIndex);
+      });
+      
+      questionDisplay.textContent = 'Выберите вопрос';
+      answersContainer.innerHTML = '';
+      explanationDisplay.innerHTML = `💡 Пояснение появится после ответа. Счёт: ${totalScore}`;
+      nextBtn.disabled = true;
+      renderPoints();
+      categoryDisplay.textContent = groups[currentGroup].name.toUpperCase();
+    }
+
+    function startMatchGame() {
+      gamePhase = 'match';
+      quizRoundDiv.style.display = 'none';
+      matchRoundDiv.style.display = 'flex';
+      document.querySelector('.group-selector').style.display = 'none';
+      pointsGrid.style.display = 'none';
+      
+      const originalRights = matchPairs.map(p => p.right);
+      shuffledMatchRights = [...originalRights].sort(() => Math.random() - 0.5);
+      renderMatchUI();
+      matchFeedback.textContent = `Ваш итоговый счёт перед финалом: ${totalScore} баллов`;
+    }
+
+    function renderMatchUI() {
+      matchContainer.innerHTML = '';
+      matchPairs.forEach((pair, idx) => {
+        const div = document.createElement('div');
+        div.className = 'match-pair';
+        const leftDiv = document.createElement('div');
+        leftDiv.className = 'left-item';
+        leftDiv.textContent = pair.left;
+        
+        const select = document.createElement('select');
+        select.className = 'match-select';
+        select.dataset.pairIndex = idx;
+        shuffledMatchRights.forEach(val => {
+          const opt = document.createElement('option');
+          opt.value = val;
+          opt.textContent = val;
+          select.appendChild(opt);
+        });
+        
+        div.appendChild(leftDiv);
+        div.appendChild(select);
+        matchContainer.appendChild(div);
+      });
+    }
+
+    function checkMatches() {
+      const selects = document.querySelectorAll('.match-select');
+      let correctCount = 0;
+      selects.forEach((sel, i) => {
+        if (sel.value === matchPairs[i].right) correctCount++;
+      });
+      if (correctCount === matchPairs.length) {
+        matchFeedback.innerHTML = `🎉 Идеально! Все пары сопоставлены верно. Финальный счёт: ${totalScore} баллов.`;
+        matchFeedback.style.color = '#c7f57b';
+      } else {
+        matchFeedback.innerHTML = `❌ Верно ${correctCount} из ${matchPairs.length}. Попробуйте ещё. Счёт: ${totalScore}`;
+        matchFeedback.style.color = '#f5b07b';
+      }
+    }
+
+    function restartGame() {
+      usedQuestions = [new Set(), new Set(), new Set()];
+      currentGroup = 0;
+      activeQuestion = null;
+      answered = false;
+      gamePhase = 'quiz';
+      totalScore = 0;
+      updateScoreDisplay();
+      
+      quizRoundDiv.style.display = 'flex';
+      matchRoundDiv.style.display = 'none';
+      document.querySelector('.group-selector').style.display = 'flex';
+      pointsGrid.style.display = 'flex';
+      
+      groupButtons.forEach((b, i) => b.classList.toggle('active', i === 0));
+      questionDisplay.textContent = 'Выберите вопрос';
+      answersContainer.innerHTML = '';
+      explanationDisplay.innerHTML = '💡 Пояснение появится после ответа.';
+      nextBtn.disabled = true;
+      categoryDisplay.textContent = groups[0].name.toUpperCase();
+      renderPoints();
+    }
+
+    groupButtons.forEach((btn, idx) => {
+      btn.addEventListener('click', () => switchGroup(idx));
+    });
+    
+    nextBtn.addEventListener('click', goToNext);
+    checkMatchBtn.addEventListener('click', checkMatches);
+    restartBtn.addEventListener('click', restartGame);
+
+    renderPoints();
+    updateScoreDisplay();
+    categoryDisplay.textContent = groups[0].name.toUpperCase();
+  })();
+</script>
+</body>
+</html>
